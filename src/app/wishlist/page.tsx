@@ -1,6 +1,0 @@
-'use client'
-import {useEffect,useState} from 'react'
-import Link from 'next/link'
-import ProductCard from '@/components/ProductCard'
-import type {Product} from '@/lib/store'
-export default function Wishlist(){const [ids,setIds]=useState<string[]>([]);const [items,setItems]=useState<Product[]>([]);useEffect(()=>{try{const saved=JSON.parse(localStorage.getItem('dzone_wishlist')||'[]');if(Array.isArray(saved)){setIds(saved);fetch('/api/wishlist',{method:'POST',headers:{'Content-Type':'application/json'},body:JSON.stringify({ids:saved})}).then(r=>r.json()).then(j=>setItems(j.products||[])).catch(()=>{})}}catch{}},[]);return <main className="container"><div className="page-head"><h1>Your wishlist</h1><p className="muted">Products saved on this device.</p></div>{ids.length?<><div className="section-heading"><span className="muted tiny">{items.length} saved products</span><button className="btn btn-outline btn-small" onClick={()=>{localStorage.removeItem('dzone_wishlist');setIds([]);setItems([])}}>Clear wishlist</button></div><div className="product-grid">{items.map(p=><ProductCard key={p.id} p={p}/>)}</div></>:<div className="empty"><h3>No saved products yet</h3><p className="muted">Tap the heart icon on a product to save it here.</p><Link href="/shop" className="btn">Explore products</Link></div>}</main>}
